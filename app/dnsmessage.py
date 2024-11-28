@@ -45,7 +45,7 @@ class DNSHeader:
             self.arcount,  # ARCOUNT
         )
 
-def create_dns_response() -> bytes:
+def create_dns_response(qdcount = 0) -> bytes:
     # Create header with specified values
     header = DNSHeader(
         id=1234,  # Specified ID
@@ -57,7 +57,7 @@ def create_dns_response() -> bytes:
         ra=0,
         z=0,
         rcode=0,
-        qdcount=0,
+        qdcount=qdcount,
         ancount=0,
         nscount=0,
         arcount=0,

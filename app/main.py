@@ -14,11 +14,15 @@ def main():
         try:
             buf, source = udp_socket.recvfrom(512)
             print(f"Received data from {source} with length {len(buf)}: {buf}")
-    
-            response = create_dns_response()
+
+            question_section = buf[12:]
+            response = create_dns_response(1)
+            response += question_section
     
             udp_socket.sendto(response, source)
             print(f"Sent response with length {len(response)}")
+
+
         except Exception as e:
             print(f"Error receiving data: {e}")
             break
