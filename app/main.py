@@ -1,5 +1,5 @@
 import socket
-
+from app.dnsmessage import create_dns_response
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -13,10 +13,12 @@ def main():
     while True:
         try:
             buf, source = udp_socket.recvfrom(512)
+            print(f"Received data from {source} with length {len(buf)}: {buf}")
     
-            response = b""
+            response = create_dns_response()
     
             udp_socket.sendto(response, source)
+            print(f"Sent response with length {len(response)}")
         except Exception as e:
             print(f"Error receiving data: {e}")
             break
