@@ -15,9 +15,7 @@ def main():
             buf, source = udp_socket.recvfrom(512)
             print(f"Received data from {source} with length {len(buf)}: {buf}")
 
-            question_section = buf[12:]
-            response = create_dns_response(1)
-            response += question_section
+            response = create_dns_response()
     
             udp_socket.sendto(response, source)
             print(f"Sent response with length {len(response)}")
