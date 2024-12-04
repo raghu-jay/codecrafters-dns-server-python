@@ -5,14 +5,6 @@ from typing import List
 
 
 @dataclass
-class DNSHeader:
-    name:    str = ''
-    type_:   int = 0  # 16 bits
-    class_:  int = 0  # 16 bits
-    ttl:     int = 0  # 32 bits
-    arcount: int = 0  # 16 bits
-
-@dataclass
 class DNSQuestion:
     qname: bytes
     qtype: int
@@ -34,21 +26,6 @@ class DNSResource:
             self.name
             + struct.pack("!HHIH", self.type_, self.class_, self.ttl, self.rdlength)
             + self.rdata
-        )
-
-@dataclass
-class DNSMessage:
-
-    header: DNSHeader
-    question: List[DNSQuestion]
-    resource: List[DNSResource] = None
-
-    def to_bytes(self) -> bytes:
-        return self.header.to_bytes() + b"".join([q.to_bytes() for q in self.question])
-        return (
-            self.header.to_bytes()
-            + b"".join([q.to_bytes() for q in self.question])
-            + b"".join([r.to_bytes() for r in self.resource])
         )
 
 
@@ -95,6 +72,20 @@ class DNSHeader:
             self.arcount,  # ARCOUNT
         )
 
+@dataclass
+class DNSMessage:
+
+    header: DNSHeader
+    question: List[DNSQuestion]
+    resource: List[DNSResource] = None
+
+    def to_bytes(self) -> bytes:
+        return (
+            self.header.to_bytes()
+            + b"".join([q.to_bytes() for q in self.question])
+            + b"".join([r.to_bytes() for r in self.resource])
+        )
+
 def create_dns_response() -> bytes:
     # Create header with specified values
     header = DNSHeader(
@@ -123,7 +114,9 @@ def create_dns_response() -> bytes:
         rdlength=4,
         rdata=b"\x08\x08\x08\x08",
     )
-    return DNSMessage(header, [question], [resource]).to_bytes()
+
+    res = DNSMessage(header, [question], [resource]).to_bytes()
+    return res
 
 
 
